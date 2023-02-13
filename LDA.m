@@ -13,7 +13,7 @@ function LDA(v1_o1_mean, v1_o2_mean, v2_o1_mean, v2_o2_mean, v1, v2, col1, col2,
     
     between_scatter = (o1_mean - o2_mean)' * (o1_mean - o2_mean);
     
-    mat = inv(within_scatter) * between_scatter;
+    mat = within_scatter \ between_scatter;
     
     [eigenvectors, eigenvalues] = eig(mat);
     eigenvalue_array = diag(eigenvalues);
@@ -26,6 +26,7 @@ function LDA(v1_o1_mean, v1_o2_mean, v2_o1_mean, v2_o2_mean, v1, v2, col1, col2,
     
     nexttile
     scatter(v1(1:10),v2(1:10),col1, 'filled');
+    grid on
     hold on
     scatter(v1(11:20),v2(11:20), col2, "filled");
     ylim([-2 2])
@@ -43,8 +44,11 @@ function LDA(v1_o1_mean, v1_o2_mean, v2_o1_mean, v2_o2_mean, v1, v2, col1, col2,
     standardized_data = [v1; v2];
     one_d_data = ld_line' * standardized_data;
     scatter(one_d_data(1,1:10), zeros(10), col1,"filled")
+    grid on
     hold on
     scatter(one_d_data(1,11:20), zeros(10), col2,"filled")
     line([0 0], [-1 1], "LineStyle","--")
     title('LDA - '+ v1name + ' and ' + v2name + " - 1d")
+    yticks(0)
+    yticklabels({'LD1'})
 end
