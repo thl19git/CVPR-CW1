@@ -8,7 +8,7 @@ pdc = normalize([acrylic_pvt.pdc black_foam_pvt.pdc car_sponge_pvt.pdc flour_sac
 
 data = [tdc; pac; pdc]';
 
-rng(22)
+rng(12)
 [idx,C,sumd] = kmeans(data, 6, "Distance","sqeuclidean");
 %sumd can be used for elbow method - divide by cluster size to get average
 %distance
@@ -52,3 +52,28 @@ title("K-means with k=6, cityblock")
 
 load("electrodes_pca.mat");
 
+objects = ["acrylic", "black_foam", "car_sponge", "flour_sack", "kitchen_sponge", "steel_vase"];
+
+indices = randperm(60);
+train_data = data(indices(1:36),:);
+train_classes = objects(idivide(int16(indices(1:36)),int16(10),'ceil'));
+test_data = data(indices(37:60),:);
+test_classes = objects(idivide(int16(indices(37:60)),int16(10),'ceil'));
+
+Mdl = TreeBagger(50,train_data,train_classes,...
+    Method="classification",...
+    OOBPrediction="on");
+
+view(Mdl.Trees{1},Mode="graph")
+
+view(Mdl.Trees{2},Mode="graph")
+
+nexttile
+plot(oobError(Mdl))
+xlabel("Number of Grown Trees")
+ylabel("Out-of-Bag Classification Error")
+
+predictions = string(predict(Mdl, test_data)');
+
+nexttile
+confusionchart(test_classes,predictions)
