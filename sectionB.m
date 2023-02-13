@@ -102,6 +102,8 @@ xlabel('Component number')
 electrodes_feature_vector = electrodes_sorted_eigenvectors(:,1:3);
 three_d_data = electrodes_feature_vector' * electrodes_std';
 
+save("electrodes_pca.mat", "three_d_data")
+
 nexttile
 plotElectrodes(three_d_data, 1, 10, "red");
 hold on
