@@ -1,5 +1,5 @@
 function [pvt_data, electrode_data] = sampleData(data, timestamp)
-    fields = {'tac','pac','pdc'};
+    fields = {'tdc','pac','pdc'};
     electrode_data = zeros(19, 10);
     for n = 10:-1:1
         for field = fields
