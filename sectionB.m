@@ -2,18 +2,18 @@
 load('F0_PVT.mat')
 
 % standardize data (mean = 0, std = 1) for each variable
-tdc_standardized = normalize([acrylic_pvt.tdc black_foam_pvt.tdc car_sponge_pvt.tdc flour_sack_pvt.tdc kitchen_sponge_pvt.tdc steel_vase_pvt.tdc]);
+tac_standardized = normalize([acrylic_pvt.tac black_foam_pvt.tac car_sponge_pvt.tac flour_sack_pvt.tac kitchen_sponge_pvt.tac steel_vase_pvt.tac]);
 pac_standardized = normalize([acrylic_pvt.pac black_foam_pvt.pac car_sponge_pvt.pac flour_sack_pvt.pac kitchen_sponge_pvt.pac steel_vase_pvt.pac]);
 pdc_standardized = normalize([acrylic_pvt.pdc black_foam_pvt.pdc car_sponge_pvt.pdc flour_sack_pvt.pdc kitchen_sponge_pvt.pdc steel_vase_pvt.pdc]);
 
-acrylic_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 1, 10);
-black_foam_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 11, 20);
-car_sponge_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 21, 30);
-flour_sack_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 31, 40);
-kitchen_sponge_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 41, 50);
-steel_vase_std = toStandardizedStruct(tdc_standardized, pac_standardized, pdc_standardized, 51, 60);
+acrylic_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 1, 10);
+black_foam_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 11, 20);
+car_sponge_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 21, 30);
+flour_sack_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 31, 40);
+kitchen_sponge_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 41, 50);
+steel_vase_std = toStandardizedStruct(tac_standardized, pac_standardized, pdc_standardized, 51, 60);
 
-standardized_data = [tdc_standardized; pac_standardized; pdc_standardized]';
+standardized_data = [tac_standardized; pac_standardized; pdc_standardized]';
 
 pvt_cov = cov(standardized_data);
 [pvt_cov_eigenvectors, pvt_cov_eigenvalues] = eig(pvt_cov);

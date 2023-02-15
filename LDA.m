@@ -29,9 +29,9 @@ function LDA(v1_o1_mean, v1_o2_mean, v2_o1_mean, v2_o2_mean, v1, v2, col1, col2,
     grid on
     hold on
     scatter(v1(11:20),v2(11:20), col2, "filled");
-    ylim([-2 2])
-    xlim([-2 2])
-    x = [-2 2];
+    ylim([-3 3])
+    xlim([-3 3])
+    x = [-3 3];
     y = ((ld_line(2) / ld_line(1)) * x);
     plot(x,y)
     divisor = (-(ld_line(1) / ld_line(2)) * x);

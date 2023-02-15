@@ -1,9 +1,9 @@
-function LDA3(tdc, pac, pdc, o1_mean, o2_mean, col1, col2)
+function LDA3(tac, pac, pdc, o1_mean, o2_mean, col1, col2)
     within_scatter = zeros(3,3);
     
     for n = 1:10
-        o1_val = [tdc(n) pac(n) pdc(n)];
-        o2_val = [tdc(10+n) pac(10+n) pdc(10+n)];
+        o1_val = [tac(n) pac(n) pdc(n)];
+        o2_val = [tac(10+n) pac(10+n) pdc(10+n)];
         within_scatter = within_scatter + ((o1_val - o1_mean)' * (o1_val - o1_mean));
         within_scatter = within_scatter + ((o2_val - o2_mean)' * (o2_val - o2_mean));
     end
@@ -23,22 +23,31 @@ function LDA3(tdc, pac, pdc, o1_mean, o2_mean, col1, col2)
     ld2_line = sorted_eigenvectors(:,2);
 
     plane = cross(ld1_line, ld2_line);
-
+    
     nexttile
-    scatter3(tdc(1:10),pac(1:10),pdc(1:10),col1, 'filled');
+    scatter3(tac(1:10),pac(1:10),pdc(1:10),col1, 'filled');
     hold on
     grid on
-    scatter3(tdc(11:20),pac(11:20),pdc(11:20),col2, 'filled');
+    scatter3(tac(11:20),pac(11:20),pdc(11:20),col2, 'filled');
     xlabel("Temperature")
     ylabel("Vibrations")
     zlabel("Pressue")
     title("3d LDA")
-    % TODO: Plot plane (not sure how we do this atm)
-    [x, y] = meshgrid(-2:1:2);
-    z = (-plane(1)*x - plane(2)*y)/plane(3);
-    surf(x,y,z, "FaceAlpha","0.2", "FaceColor","black");
+    xlim([-3 3])
+    ylim([-3 3])
+    zlim([-3 3])
+    if col1 == "red" %slight hack to create LDA planes - calculate intersections and plot patch
+        z = [3 -3 -3 3];
+        x = [3 3 -3 -3];
+        y = (-plane(1)*x - plane(3)*z)/plane(2);
+    else
+        x = [3 -3 -3 3];
+        y = [3 3 -3 -3];
+        z = (-plane(1)*x - plane(2)*y)/plane(3);
+    end
+    patch(x,y,z,"black","FaceAlpha","0.2")
 
-    standardized_data = [tdc; pac; pdc];
+    standardized_data = [tac; pac; pdc];
     two_d_data = [ld1_line ld2_line]' * standardized_data;
     
     nexttile

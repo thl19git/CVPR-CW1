@@ -2,18 +2,33 @@
 
 load('F0_PVT.mat')
 
-tdc = normalize([acrylic_pvt.tdc black_foam_pvt.tdc car_sponge_pvt.tdc flour_sack_pvt.tdc kitchen_sponge_pvt.tdc steel_vase_pvt.tdc]);
+tac = normalize([acrylic_pvt.tac black_foam_pvt.tac car_sponge_pvt.tac flour_sack_pvt.tac kitchen_sponge_pvt.tac steel_vase_pvt.tac]);
 pac = normalize([acrylic_pvt.pac black_foam_pvt.pac car_sponge_pvt.pac flour_sack_pvt.pac kitchen_sponge_pvt.pac steel_vase_pvt.pac]);
 pdc = normalize([acrylic_pvt.pdc black_foam_pvt.pdc car_sponge_pvt.pdc flour_sack_pvt.pdc kitchen_sponge_pvt.pdc steel_vase_pvt.pdc]);
 
-data = [tdc; pac; pdc]';
+data = [tac; pac; pdc]';
 
-rng(12)
+rng("default")
+% This is redundant, but removing it would hamper reproducibility
 [idx,C,sumd] = kmeans(data, 6, "Distance","sqeuclidean");
-%sumd can be used for elbow method - divide by cluster size to get average
-%distance
+
+% Elbow method - try k = 1 .. 10
+for k = 10:-1:1
+    [idx,C,sumd] = kmeans(data, k, "Distance","sqeuclidean");
+    distance(k) = sum(sumd);
+end
 
 tiledlayout("flow")
+nexttile
+plot(distance)
+xlim([1 10])
+xlabel("k")
+ylabel("Sum of squared Euclidean distances")
+title("K-means with different values of k")
+
+% Now use k=6 given there are 6 objects
+[idx,C,sumd] = kmeans(data, 6, "Distance","sqeuclidean");
+
 nexttile
 
 scatter3(data(idx==1,1),data(idx==1,2),data(idx==1,3),"red", "filled")
@@ -64,14 +79,19 @@ Mdl = TreeBagger(50,train_data,train_classes,...
     Method="classification",...
     OOBPrediction="on");
 
-view(Mdl.Trees{1},Mode="graph")
-
-view(Mdl.Trees{2},Mode="graph")
-
 nexttile
 plot(oobError(Mdl))
 xlabel("Number of Grown Trees")
 ylabel("Out-of-Bag Classification Error")
+title("Out-of-Bag Classification Error")
+
+% Retrain but with 12 trees as this was best accuracy/computation balance
+Mdl = TreeBagger(12,train_data,train_classes,...
+    Method="classification");
+
+view(Mdl.Trees{1},Mode="graph")
+
+view(Mdl.Trees{2},Mode="graph")
 
 predictions = string(predict(Mdl, test_data)');
 
